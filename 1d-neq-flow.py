@@ -196,7 +196,7 @@ with tab2:
              termodinâmico da entrada da tubeira até a garganta, que é então caracterizada.''')    
     
     st.write('''Por fim, o escoamento desenvolvido após a garganta é aproximado de um reator do tipo *plug flow* 
-             de área variável, que se estabele segundo as seguintes equações(3):''')    
+             de área variável, que se estabele segundo as seguintes equações(3,4):''')    
     
     st.latex(r'''\frac{d\rho}{dx} = \frac{ \left( 1 - \frac{R_U}{c_p MW_{mix}} \right)\rho^2v_x^2\left( \frac{1}{A}\frac{dA}{dx}\right)  + \frac{\rho R_U}{v_x c_p MW_{mix}}\sum_i MW_i \dot{\omega_i} \left( h_i - \frac{MW_{mix}}{MW_i}c_p T \right)}{P\left( 1 + \frac{v_x^2}{c_p T}\right) - \rho v_x^2 }''')
     st.latex(r'''\frac{dT}{dx} = \frac{v_x^2}{\rho c_p}\frac{d\rho}{dx} +  \frac{v_x^2}{c_p}\left( \frac{1}{A}\frac{dA}{dx}\right) - \frac{1}{v_x \rho c_p } \sum_i h_i MW_i  \dot{\omega_i}''')
@@ -205,5 +205,6 @@ with tab2:
     st.write('''###### Referências''')
     st.write('''1 - Matos, P.A.S., Velocimetria a Laser em Túnel de Choque Hipersônico. Tese de Doutorado – ITA, 2018.\\
                 2 - Ribeiro, L.A.G, Semi-Empirical Study of The Air Mass Flow Rate Captured by a Supersonic Combustor. Disertação de Mestrado - ITA, 2022.\\
+                3 - General Plug Flow Reactor,Ashwin Kumar and Dr.Joseph Meadows, https://cantera.org/examples/matlab/Plug_Flow_Reactor.m.html . \\
                 3 - Turns, S. R., An introduction to combustion: concepts and applications, third edition. ed., McGraw-Hill series in mechanical engineering, McGraw-Hill, New York, 2012.''')
 
