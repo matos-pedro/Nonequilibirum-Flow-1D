@@ -1,7 +1,6 @@
 import cantera as ct
 import numpy as np
 import scipy.integrate
-import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d as i1d
 from scipy.interpolate import UnivariateSpline as us1d
 
