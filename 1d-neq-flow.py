@@ -206,5 +206,5 @@ with tab2:
     st.write('''1 - Matos, P.A.S., Velocimetria a Laser em Túnel de Choque Hipersônico. Tese de Doutorado – ITA, 2018.\\
                 2 - Ribeiro, L.A.G, Semi-Empirical Study of The Air Mass Flow Rate Captured by a Supersonic Combustor. Disertação de Mestrado - ITA, 2022.\\
                 3 - General Plug Flow Reactor,Ashwin Kumar and Dr.Joseph Meadows, https://cantera.org/examples/matlab/Plug_Flow_Reactor.m.html . \\
-                3 - Turns, S. R., An introduction to combustion: concepts and applications, third edition. ed., McGraw-Hill series in mechanical engineering, McGraw-Hill, New York, 2012.''')
+                4 - Turns, S. R., An introduction to combustion: concepts and applications, third edition. ed., McGraw-Hill series in mechanical engineering, McGraw-Hill, New York, 2012.''')
 
