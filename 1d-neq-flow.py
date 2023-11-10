@@ -172,7 +172,7 @@ st.dataframe(df_X, use_container_width=True)
 
 csv_X = df_X.to_csv(index=True).encode('utf-8')
 st.download_button( "Download de Parâmetros Termodinâmicos",
-                        csv,
+                        csv_X,
                         "NEq_Especies.csv",
                         "text/csv",
                         key='download-csv_X'  )
