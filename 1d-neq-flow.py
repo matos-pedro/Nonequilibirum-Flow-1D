@@ -7,6 +7,8 @@ import pandas as pd
 import STube
 import Reactor
 
+
+
 st.set_page_config(
     page_title="1D non-equlibrium nozzle flow - Calc",
     layout="wide",
@@ -25,8 +27,10 @@ with st.sidebar:
 
     bool_ST= False
     try:
+        st.write(":green[**!STube Rodou Corretamente!**]")
         gas8 = STube.STube_Calc(T1, p1, us, p8, X1)
         bool_ST= True
+        st.write(":green[**!STube Rodou Corretamente!**]")
         T5 = gas8.T; p5 = gas8.P; h5 = gas8.h; X = gas8.X 
         st.write(":green[**!STube Rodou Corretamente!**]")
         
@@ -54,16 +58,16 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.write("###### Condições Iniciais:")
-    st.info(f"""Pressão, p1 : {p1/1e3 : 4.4} kPa   \\
-            Temperatura, T1 : {T1 : .0f} K    \\
-            Vel. Onda Incidente, us : {us : 5.5} m/s \\
+    st.info(f"""Pressão, p1 :         {p1/1e3 : 4.4} kPa   \\
+            Temperatura, T1 :         {T1 : .0f} K         \\
+            Vel. Onda Incidente, us : {us : 5.5} m/s       \\
             Composição Inicial : {X1} 
             """)
     
     st.write("###### Condições de Estagnação:")
 
-    st.info(f"""Pressão, p5 : {p5/1e6 : 4.4} MPa   \\
-        Temperatura, T5 : {T5 : .0f} K    \\
+    st.info(f"""Pressão, p5 :     {p5/1e6 : 4.4} MPa       \\
+        Temperatura, T5 :         {T5 : .0f} K             \\
         Entalpia Específica, h5 : {h5/1e6 : 4.2f} MJ/kg 
         """)
 
@@ -84,7 +88,7 @@ st.write("### Geometria da Tubeira")
 
 col1, col2 = st.columns(2)
 with col1:
-    fig = px.area(x=Reator.x, y= Reator.R(Reator.x),height=300,width=600,labels=dict(x='Posição Axial (cm)', y='Raio (cm)'))
+    fig = px.area(x=Reator.x, y= Reator.R(Reator.x), height=300, width=600, labels=dict(x='Posição Axial (cm)', y='Raio (cm)'))
     fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=20)) )
     fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=20)) )
     fig.update_xaxes(title_font_family="Arial")
