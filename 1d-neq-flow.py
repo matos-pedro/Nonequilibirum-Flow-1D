@@ -51,7 +51,7 @@ with st.sidebar:
 st.write("## Simulação 1D em Não-Equilíbrio ")
 st.write("""A calculadora calcula
          1) as condições de estagnação de um tubo de choque, 
-         2) as condições da garganta em equilíbrio para uma dada tubeira e 
+         2) as condições da garganta em equilíbrio dada a tubeira e 
          3) simula, da garganta em diante, em 1d o escoamento reativo estabelecido na tubeira.""")
 
 ## A Saída ----------------------------------------------------------------------------------------------
@@ -185,5 +185,22 @@ with tab1:
                             "text/csv",
                             key='download-csv_X'  )
 
+with tab2:
+    st.write('''##### O que é feito aqui?''')
+    st.write('''Especifica-se as condições ''')
+    st.write('''Inicialmente especifica-se por completo o tubo de choque a partir de informações do gás de driven e
+             velocidade da onda de choque incidente. A pressçao de estagnação, se conhecida, pode ser usada também
+             como dado de entrada; caso contrário, o campo associado pode ser preenchido com zero, e uma pressão p5 será estimada.''')
+    
+    st.write('''A partir da estagnação e dos dados inseridos referentes à geometria da tubeira, o código assume equilíbrio
+             termodinâmico da entrada da tubeira até a garganta, que é então caracterizada.''')    
+    
+    st.write('''Por fim, o escoamento desenvolvido após a garganta é aproximado de um reator do tipo *plug flow* 
+             de área variável, que se estabele segundo as seguintes equações:''')    
+    
+    st.latex(r'''\frac{d\rho}{dx} = \frac{ \left( 1 - \frac{R_U}{c_p MW_{mix}} \right)\rho^2v_x^2\left( \frac{1}{A}\frac{dA}{dx}\right)  + \frac{\rho R_U}{v_x c_p MW_{mix}}\sum_i MW_i \dot{\omega_i} \left( h_i - \frac{MW_{mix}}{MW_i}c_p T \right)}{P\left( 1 + \frac{v_x^2}{c_p T}\right) - \rho v_x^2 }''')
+    st.latex(r'''\frac{dT}{dx} = \frac{v_x^2}{\rho c_p}\frac{d\rho}{dx} +  \frac{v_x^2}{c_p}\left( \frac{1}{A}\frac{dA}{dx}\right) - \frac{1}{v_x \rho c_p } \sum_i h_i MW_i  \dot{\omega_i}''')
+    st.latex(r'''\frac{dY_i}{dx} = \frac{\omega_i MW_i}{\rho v_x}''')
 
-    #st.write(Reator.states)
+    st.write('''###### Referências''')
+
