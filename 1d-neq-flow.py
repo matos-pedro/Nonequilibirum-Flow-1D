@@ -102,16 +102,17 @@ with col2:
     st.plotly_chart(fig,use_container_width=True)
     
 st.write("### Saída da Tubeira")
+st.write("#### Parâmetros Termodinâmicos Calculados")
 col1, col2 = st.columns(2)
 with col1:
-    fig = px.area(title='Velocidade',x=Reator.states.x, y= Reator.states.Vel.astype('int'),labels=dict(x='Posição Axial (cm)', y='Velocidade (m/s)'))
+    fig = px.area(title='Velocidade',x=100*Reator.states.x, y= Reator.states.Vel.astype('int'),labels=dict(x='Posição Axial (cm)', y='Velocidade (m/s)'))
     fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17)) )
     fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17)) )
     fig.update_xaxes(title_font_family="Arial")
     fig.update_traces(line={'width': 5},line_color='#147852',hoverlabel=dict(font_size=18))
     st.plotly_chart(fig,use_container_width=True)
 
-    fig = px.area(title='Mach',x=Reator.states.x, y= np.round(Reator.states.Mach,2),labels=dict(x='Posição Axial (cm)', y='Número de Mach'))
+    fig = px.area(title='Mach',x=100*Reator.states.x, y= np.round(Reator.states.Mach,2),labels=dict(x='Posição Axial (cm)', y='Número de Mach'))
     fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17)) )
     fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17)) )
     fig.update_xaxes(title_font_family="Arial")
@@ -120,23 +121,44 @@ with col1:
 
 
 with col2:
-    fig = px.area(title='Temperatura',x=Reator.states.x, y= Reator.states.T.astype('int'),labels=dict(x='Posição Axial (cm)', y='Temperatura (K)'))
+    fig = px.area(title='Temperatura',x=100*Reator.states.x, y= Reator.states.T.astype('int'),labels=dict(x='Posição Axial (cm)', y='Temperatura (K)'))
     fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17)) )
     fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17)) )
     fig.update_xaxes(title_font_family="Arial")
     fig.update_traces(line={'width': 5},line_color='#910902',hoverlabel=dict(font_size=18))
     st.plotly_chart(fig,use_container_width=True)
     
-    fig = px.area(title='Pressão',x=Reator.states.x, y= Reator.states.P.astype('int'),labels=dict(x='Posição Axial (cm)', y='Pressão (Pa)'))
+    fig = px.area(title='Pressão',x=100*Reator.states.x, y= Reator.states.P.astype('int'),labels=dict(x='Posição Axial (cm)', y='Pressão (Pa)'))
     fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17), type="log") )
     fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17)) )
     fig.update_xaxes(title_font_family="Arial")
     fig.update_traces(line={'width': 5},line_color='#186211',hoverlabel=dict(font_size=18))
     st.plotly_chart(fig,use_container_width=True)
 
+st.write("##### Tabela de Parâmetros Termodinâmicos Calculados")
+df = pd.DataFrame( data=np.column_stack(( Reator.states.Vel, Reator.states.Mach, Reator.states.T, Reator.states.P, Reator.states.density, 
+                                          1e6*Reator.states.viscosity, Reator.states.cp_mass, Reator.states.cv_mass )),
+                  columns=['Velocidade, m/s','Mach', 'Temperatura, K','Pressão (Pa)','Densidade, kg/m3',
+                           'Viscosidade, 1E-6Pa-s', 'Cp, J/(K.Kg)','Cv, J/(K.Kg)' ]  )
+
+df.set_index( Reator.states.x ,inplace=True)
+df.index.set_names("Posição, m",inplace=True)
+st.dataframe(df, use_container_width=True)
+
+csv = df.to_csv(index=True).encode('utf-8')
+st.download_button(
+   "Download de Parâmetros Termodinâmicos",
+   csv,
+   "NEq_Termo-Params.csv",
+   "text/csv",
+   key='download-csv'
+)
+
+st.write("#### Concentração de Espécies Químicas")
 df_X = 100*pd.DataFrame(Reator.states.X)
 df_X.columns = Reator.states.species_names
-df_X.set_index = Reator.states.x
+df_X.set_index( Reator.states.x ,inplace=True)
+df_X.index.set_names("Posição, m",inplace=True)
 
 fig = px.line(df_X, title='Concentração de Espécies Químicas', labels={'index':'Posição Axial (cm)', 'value':'Fração Molar'} )
 fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=20), type="log" ),yaxis_range=[-2,2] )
@@ -144,3 +166,16 @@ fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=2
 fig.update_xaxes(title_font_family="Arial")
 fig.update_traces(line={'width': 10},hoverlabel=dict(font_size=20))
 st.plotly_chart(fig,use_container_width=True)
+
+st.write("##### Tabela de Espécies Químicas Calculadas")
+st.dataframe(df_X, use_container_width=True)
+
+csv_X = df_X.to_csv(index=True).encode('utf-8')
+st.download_button( "Download de Parâmetros Termodinâmicos",
+                        csv,
+                        "NEq_Especies.csv",
+                        "text/csv",
+                        key='download-csv_X'  )
+
+
+#st.write(Reator.states)

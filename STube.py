@@ -48,7 +48,6 @@ def Shock5E(gas5,p8,p5):
     
     gas5.SP = gas5.entropy_mass, p8
     gas5.equilibrate('SP')
-    print(gas5.P)
     return gas5
     
 
