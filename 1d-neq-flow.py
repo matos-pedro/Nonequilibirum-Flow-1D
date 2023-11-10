@@ -94,17 +94,19 @@ with tab1:
 
     col1, col2 = st.columns(2)
     with col1:
-        fig = px.area(x=Reator.x, y= Reator.R(Reator.x), labels=dict(x='Posição Axial (cm)', y='Raio (cm)'))
+        fig = px.area(x=100*Reator.x, y= Reator.R(Reator.x), labels=dict(x='Posição Axial (cm)', y='Raio (cm)'))
         fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=20)) )
         fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=20)) )
         fig.update_xaxes(title_font_family="Arial")
+        fig.update_traces(line={'width': 5},hoverlabel=dict(font_size=18))
         st.plotly_chart(fig,use_container_width=True)
 
     with col2:
-        fig = px.area(x=Reator.x, y= Reator.A(Reator.x),labels=dict(x='Posição Axial (cm)', y='Area (cm^2)'))
+        fig = px.area(x=100*Reator.x, y= Reator.A(Reator.x),labels=dict(x='Posição Axial (cm)', y='Area (cm^2)'))
         fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=20)) )
         fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=20)) )
         fig.update_xaxes(title_font_family="Arial")
+        fig.update_traces(line={'width': 5},hoverlabel=dict(font_size=18))
         st.plotly_chart(fig,use_container_width=True)
         
     st.write("### Saída da Tubeira")
