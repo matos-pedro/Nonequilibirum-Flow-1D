@@ -14,6 +14,8 @@ st.set_page_config(
     layout="wide",
     )
 
+
+
 with st.sidebar:
     st.write("# Parâmetros de Entrada")
 
@@ -90,14 +92,14 @@ with col1:
     fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=20)) )
     fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=20)) )
     fig.update_xaxes(title_font_family="Arial")
-    st.plotly_chart(fig)
+    st.plotly_chart(fig,use_container_width=True)
 
 with col2:
     fig = px.area(x=Reator.x, y= Reator.A(Reator.x),labels=dict(x='Posição Axial (cm)', y='Area (cm^2)'))
     fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=20)) )
     fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=20)) )
     fig.update_xaxes(title_font_family="Arial")
-    st.plotly_chart(fig)
+    st.plotly_chart(fig,use_container_width=True)
     
 st.write("### Saída da Tubeira")
 col1, col2 = st.columns(2)
@@ -107,14 +109,14 @@ with col1:
     fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17)) )
     fig.update_xaxes(title_font_family="Arial")
     fig.update_traces(line={'width': 5},line_color='#147852',hoverlabel=dict(font_size=18))
-    st.plotly_chart(fig)
+    st.plotly_chart(fig,use_container_width=True)
 
     fig = px.area(title='Mach',x=Reator.states.x, y= np.round(Reator.states.Mach,2),labels=dict(x='Posição Axial (cm)', y='Número de Mach'))
     fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17)) )
     fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17)) )
     fig.update_xaxes(title_font_family="Arial")
     fig.update_traces(line={'width': 5},line_color='#018989',hoverlabel=dict(font_size=18))
-    st.plotly_chart(fig)
+    st.plotly_chart(fig,use_container_width=True)
 
 
 with col2:
@@ -123,14 +125,14 @@ with col2:
     fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17)) )
     fig.update_xaxes(title_font_family="Arial")
     fig.update_traces(line={'width': 5},line_color='#910902',hoverlabel=dict(font_size=18))
-    st.plotly_chart(fig)
+    st.plotly_chart(fig,use_container_width=True)
     
     fig = px.area(title='Pressão',x=Reator.states.x, y= Reator.states.P.astype('int'),labels=dict(x='Posição Axial (cm)', y='Pressão (Pa)'))
     fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17), type="log") )
     fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17)) )
     fig.update_xaxes(title_font_family="Arial")
     fig.update_traces(line={'width': 5},line_color='#186211',hoverlabel=dict(font_size=18))
-    st.plotly_chart(fig)
+    st.plotly_chart(fig,use_container_width=True)
 
 df_X = 100*pd.DataFrame(Reator.states.X)
 df_X.columns = Reator.states.species_names
@@ -141,4 +143,4 @@ fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=2
 fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=20) ) )
 fig.update_xaxes(title_font_family="Arial")
 fig.update_traces(line={'width': 10},hoverlabel=dict(font_size=20))
-st.plotly_chart(fig)
+st.plotly_chart(fig,use_container_width=True)
