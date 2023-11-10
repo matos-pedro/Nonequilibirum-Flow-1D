@@ -27,10 +27,8 @@ with st.sidebar:
 
     bool_ST= False
     try:
-        st.write(":green[**!STube Rodou Corretamente!**]")
         gas8 = STube.STube_Calc(T1, p1, us, p8, X1)
         bool_ST= True
-        st.write(":green[**!STube Rodou Corretamente!**]")
         T5 = gas8.T; p5 = gas8.P; h5 = gas8.h; X = gas8.X 
         st.write(":green[**!STube Rodou Corretamente!**]")
         
