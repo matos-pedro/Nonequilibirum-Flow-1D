@@ -88,14 +88,14 @@ st.write("### Geometria da Tubeira")
 
 col1, col2 = st.columns(2)
 with col1:
-    fig = px.area(x=Reator.x, y= Reator.R(Reator.x), height=300, width=600, labels=dict(x='Posição Axial (cm)', y='Raio (cm)'))
+    fig = px.area(x=Reator.x, y= Reator.R(Reator.x), labels=dict(x='Posição Axial (cm)', y='Raio (cm)'))
     fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=20)) )
     fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=20)) )
     fig.update_xaxes(title_font_family="Arial")
     st.plotly_chart(fig)
 
 with col2:
-    fig = px.area(x=Reator.x, y= Reator.A(Reator.x),height=300,width=600,labels=dict(x='Posição Axial (cm)', y='Area (cm^2)'))
+    fig = px.area(x=Reator.x, y= Reator.A(Reator.x),labels=dict(x='Posição Axial (cm)', y='Area (cm^2)'))
     fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=20)) )
     fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=20)) )
     fig.update_xaxes(title_font_family="Arial")
@@ -104,14 +104,14 @@ with col2:
 st.write("### Saída da Tubeira")
 col1, col2 = st.columns(2)
 with col1:
-    fig = px.area(title='Velocidade',x=Reator.states.x, y= Reator.states.Vel.astype('int'),height=300,width=600,labels=dict(x='Posição Axial (cm)', y='Velocidade (m/s)'))
+    fig = px.area(title='Velocidade',x=Reator.states.x, y= Reator.states.Vel.astype('int'),labels=dict(x='Posição Axial (cm)', y='Velocidade (m/s)'))
     fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17)) )
     fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17)) )
     fig.update_xaxes(title_font_family="Arial")
     fig.update_traces(line={'width': 5},line_color='#147852',hoverlabel=dict(font_size=18))
     st.plotly_chart(fig)
 
-    fig = px.area(title='Mach',x=Reator.states.x, y= np.round(Reator.states.Mach,2),height=300,width=600,labels=dict(x='Posição Axial (cm)', y='Número de Mach'))
+    fig = px.area(title='Mach',x=Reator.states.x, y= np.round(Reator.states.Mach,2),labels=dict(x='Posição Axial (cm)', y='Número de Mach'))
     fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17)) )
     fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17)) )
     fig.update_xaxes(title_font_family="Arial")
@@ -120,25 +120,25 @@ with col1:
 
 
 with col2:
-    fig = px.area(title='Temperatura',x=Reator.states.x, y= Reator.states.T.astype('int'),height=300,width=600,labels=dict(x='Posição Axial (cm)', y='Temperatura (K)'))
+    fig = px.area(title='Temperatura',x=Reator.states.x, y= Reator.states.T.astype('int'),labels=dict(x='Posição Axial (cm)', y='Temperatura (K)'))
     fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17)) )
     fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17)) )
     fig.update_xaxes(title_font_family="Arial")
     fig.update_traces(line={'width': 5},line_color='#910902',hoverlabel=dict(font_size=18))
     st.plotly_chart(fig)
     
-    fig = px.area(title='Pressão',x=Reator.states.x, y= Reator.states.P.astype('int'),height=300,width=600,labels=dict(x='Posição Axial (cm)', y='Pressão (Pa)'))
+    fig = px.area(title='Pressão',x=Reator.states.x, y= Reator.states.P.astype('int'),labels=dict(x='Posição Axial (cm)', y='Pressão (Pa)'))
     fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17), type="log") )
     fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17)) )
     fig.update_xaxes(title_font_family="Arial")
-    fig.update_traces(line={'width': 5},line_color='#000000',hoverlabel=dict(font_size=18))
+    fig.update_traces(line={'width': 5},line_color='#186211',hoverlabel=dict(font_size=18))
     st.plotly_chart(fig)
 
 df_X = 100*pd.DataFrame(Reator.states.X)
 df_X.columns = Reator.states.species_names
 df_X.set_index = Reator.states.x
 
-fig = px.line(df_X, title='Concentração de Espécies Químicas', height=600, width=1200, labels={'index':'Posição Axial (cm)', 'value':'Fração Molar'} )
+fig = px.line(df_X, title='Concentração de Espécies Químicas', labels={'index':'Posição Axial (cm)', 'value':'Fração Molar'} )
 fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=20), type="log" ),yaxis_range=[-2,2] )
 fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=20) ) )
 fig.update_xaxes(title_font_family="Arial")
