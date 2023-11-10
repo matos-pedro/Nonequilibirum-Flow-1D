@@ -1,5 +1,4 @@
 import streamlit as st
-import matplotlib.pyplot as plt
 import cantera as ct
 import numpy as np
 import plotly.express as px   
