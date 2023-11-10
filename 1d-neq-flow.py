@@ -26,7 +26,7 @@ with st.sidebar:
     T1 =  st.number_input(label="Temperatura inicial do Driven (K):"     , value=298.   , min_value=298., step=1.)
     us =  st.number_input(label="Vel. da Onda de Choque Incidente (m/s):", value=2100.0 , min_value=350., step=0.1)
     p8 =  st.number_input(label="Pressão de Estagnação Medida (MPa):"    , value=8.8    , min_value=1.0, step=0.1)*1e6
-
+    st.write("*obs: para usar a pressão p5 estimada, insira 0 no campo acima*")
     bool_ST= False
     try:
         gas8 = STube.STube_Calc(T1, p1, us, p8, X1)
