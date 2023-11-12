@@ -195,12 +195,20 @@ with tab2:
     st.write('''A partir da estagnação e dos dados inseridos referentes à geometria da tubeira, o código assume equilíbrio
              termodinâmico da entrada da tubeira até a garganta, que é então caracterizada.''')    
     
-    st.write('''Por fim, o escoamento desenvolvido após a garganta é aproximado de um reator do tipo *plug flow* 
-             de área variável, que se estabele segundo as seguintes equações(3,4):''')    
+    st.write('''Por fim, o escoamento desenvolvido após a garganta é aproximado de um reator do tipo *plug flow*,
+             que resolve equações diferenciais estacionárias de conservação momento, energia, massa e de espécies, que são (3,4):''')    
     
     st.latex(r'''\frac{d\rho}{dx} = \frac{ \left( 1 - \frac{R_U}{c_p MW_{mix}} \right)\rho^2v_x^2\left( \frac{1}{A}\frac{dA}{dx}\right)  + \frac{\rho R_U}{v_x c_p MW_{mix}}\sum_i MW_i \dot{\omega_i} \left( h_i - \frac{MW_{mix}}{MW_i}c_p T \right)}{P\left( 1 + \frac{v_x^2}{c_p T}\right) - \rho v_x^2 }''')
     st.latex(r'''\frac{dT}{dx} = \frac{v_x^2}{\rho c_p}\frac{d\rho}{dx} +  \frac{v_x^2}{c_p}\left( \frac{1}{A}\frac{dA}{dx}\right) - \frac{1}{v_x \rho c_p } \sum_i h_i MW_i  \dot{\omega_i}''')
     st.latex(r'''\frac{dY_i}{dx} = \frac{\omega_i MW_i}{\rho v_x}''')
+
+    st.write(''' De acordo com (4), um reator do tipo *plug-flow* representa um reator ideal que possui as seguintes características:\\
+             1 - fluxo estacionário;\
+             2 - sem mistura na direção axial: a difusão de massa molecular e/ou turbulenta é insignificante na direção do fluxo;\\
+             3 - propriedades uniformes na direção perpendicular ao fluxo, ou seja, fluxo unidimensional: isso significa que em qualquer seção transversal, um único conjunto definido por velocidade, temperatura, composição, etc., é suficiente para caracterizar localmente o fluxo;\\
+             4 - fluxo ideal sem atrito: usa-se da simples equação de Euler para relacionar pressão e velocidade;\\
+             5 - comportamento de gás ideal: permite-se o uso de euações de estado mais simples para relacionar $T$, $P$, $ρ$, $Y_i$, $h$ e $\omega_i$.''')
+
 
     st.write('''###### Referências''')
     st.write('''1 - Matos, P.A.S., Velocimetria a Laser em Túnel de Choque Hipersônico. Tese de Doutorado – ITA, 2018.\\
