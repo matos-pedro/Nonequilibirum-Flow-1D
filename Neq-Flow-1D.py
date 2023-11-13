@@ -4,7 +4,7 @@ import numpy as np
 import plotly.express as px   
 import pandas as pd
 import time
-time.sleep(1)
+time.sleep(0.1)
 
 import STube
 import Reactor
