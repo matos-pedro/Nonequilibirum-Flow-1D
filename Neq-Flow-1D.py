@@ -203,7 +203,7 @@ with tab2:
     st.latex(r'''\frac{dY_i}{dx} = \frac{\omega_i MW_i}{\rho v_x}''')
 
     st.write(''' De acordo com (4), um reator do tipo *plug-flow* representa um reator ideal que possui as seguintes características:\\
-             1 - fluxo estacionário;\
+             1 - fluxo estacionário;\\
              2 - sem mistura na direção axial: a difusão de massa molecular e/ou turbulenta é insignificante na direção do fluxo;\\
              3 - propriedades uniformes na direção perpendicular ao fluxo, ou seja, fluxo unidimensional: isso significa que em qualquer seção transversal, um único conjunto definido por velocidade, temperatura, composição, etc., é suficiente para caracterizar localmente o fluxo;\\
              4 - fluxo ideal sem atrito: usa-se da simples equação de Euler para relacionar pressão e velocidade;\\
