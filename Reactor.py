@@ -73,6 +73,22 @@ class PFR_Solver:
         g5 = self.gas.cp/self.gas.cv
         pg = self.p5*((1+0.5*(g5-1))**(-g5/(g5-1)))
 
+        # Encontrando Pressão na Garganta -------------------------------------------------------------------
+        def acha_pg(p):
+            self.gas.SP = s5, p
+            self.gas.equilibrate('SP')
+            hg = self.gas.h
+            vg = (2.0*(h5-hg))**0.5
+            ag = np.sqrt( (self.gas.cp/self.gas.cv)*(ct.gas_constant/self.gas.mean_molecular_weight)*self.gas.T )
+            return  (vg-ag)**2 
+        
+        rranges = (slice(pg*0.8, pg*1.2, pg/100.0 ),)
+        resbrute = optimize.brute(acha_pg, rranges, full_output=True, finish=optimize.fmin)
+        pg = resbrute[0]
+        #----------------------------------------------------------------------------------------------------
+
+
+
         self.gas.SP = s5, pg
         self.gas.equilibrate('SP')
         gas_0 = self.gas
