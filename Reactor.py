@@ -109,7 +109,7 @@ class PFR_Solver:
         solver.set_integrator(name='vode', method='bdf', with_jacobian=True)
         solver.set_initial_value(self.Y0,0)
 
-        dx, x_end = 1e-4, self.x[-1] #Passo e comprimento total da tubeira
+        dx, x_end = 1e-3, self.x[-1] #Passo e comprimento total da tubeira
 
         tempo = 0
         for x in np.arange(dx,x_end+dx,dx): 
