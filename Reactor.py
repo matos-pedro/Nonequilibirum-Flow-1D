@@ -69,12 +69,26 @@ class PFR_Solver:
         self.gas.equilibrate('TP')
         
         s5 = self.gas.entropy_mass
+        h5 = self.gas.enthalpy_mass
         g5 = self.gas.cp/self.gas.cv
         pg = self.p5*((1+0.5*(g5-1))**(-g5/(g5-1)))
 
+# Encontrando Pressão na Garganta -------------------------------------------------------------------
+        def acha_pg(p):
+            self.gas.SP = s5, p
+            self.gas.equilibrate('SP')
+            hg = self.gas.h
+            vg = (2.0*(h5-hg))**0.5
+            ag = np.sqrt( (self.gas.cp/self.gas.cv)*(ct.gas_constant/self.gas.mean_molecular_weight)*self.gas.T )
+            return  (vg-ag)**2 
+        
+        rranges = (slice(pg*0.8, pg*1.2, pg/100.0 ),)
+        resbrute = optimize.brute(acha_pg, rranges, full_output=True, finish=optimize.fmin)
+        pg = resbrute[0]
+#----------------------------------------------------------------------------------------------------
         self.gas.SP = s5, pg
         self.gas.equilibrate('SP')
-        gas_0 = self.gas
+        gas_0 = self.gas #0 agora significa o começo do dominio de integracao, a garganta
 
         r0 = gas_0.density
         g0 = gas_0.cp/gas_0.cv
@@ -87,8 +101,6 @@ class PFR_Solver:
 
         self.states = ct.SolutionArray(self.gas, 1, extra={ 'x':[0], 'tempo':[0], 'dt':[0], 'Mach':[M0], 'Vel':[u0], 'Enthalpy':[h0], 'Gamma':[g0]   })
         self.Y0 = np.hstack((self.gas.T, self.gas.density,  self.gas.Y))
-    
-    
     def Solver(self):
         gas    = self.gas
         ode    = PFR_Ode(self.gas, self.mdot,self.A,self.dAdx)        #objeto
