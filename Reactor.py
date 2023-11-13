@@ -32,7 +32,7 @@ class PFR_Ode:
 
         MW = self.gas.molecular_weights
         h  = self.gas.standard_enthalpies_RT*(ct.gas_constant/MW_mix)*T
-        w  = self.gas.net_production_rates
+        w  = self.gas.net_production_rates ### Aqui-------------------------------------------------
         cp = self.gas.cp_mass
             
         drhodx = (((rho*ux)**2.)*(1.-Rnd)*(dAdx(x)/A(x))+(rho/ux)*Rnd*np.sum(MW*w*(h-(MW_mix/MW)*cp*T)))/(P*(1.+ux**2./(cp*T)) - rho*ux**2.)
@@ -70,8 +70,9 @@ class PFR_Solver:
         self.gas.equilibrate('TP')
         
         s5 = self.gas.entropy_mass
+        self.s0 = s5
         g5 = self.gas.cp/self.gas.cv
-        h5 = self.gas.h
+        self.h5 = self.gas.h
         pg = self.p5*((1+0.5*(g5-1))**(-g5/(g5-1)))
 
         # Encontrando Pressão na Garganta -------------------------------------------------------------------
@@ -79,7 +80,7 @@ class PFR_Solver:
             self.gas.SP = s5, p
             self.gas.equilibrate('SP')
             hg = self.gas.h
-            vg = (2.0*(h5-hg))**0.5
+            vg = (2.0*(self.h5-hg))**0.5
             ag = np.sqrt( (self.gas.cp/self.gas.cv)*(ct.gas_constant/self.gas.mean_molecular_weight)*self.gas.T )
             return  (vg-ag)**2 
         
@@ -87,8 +88,6 @@ class PFR_Solver:
         resbrute = optimize.brute(acha_pg, rranges, full_output=True, finish=optimize.fmin)
         pg = resbrute[0]
         #----------------------------------------------------------------------------------------------------
-
-
 
         self.gas.SP = s5, pg
         self.gas.equilibrate('SP')
@@ -103,7 +102,7 @@ class PFR_Solver:
         u0 = self.mdot/(r0*self.A(0))
         M0 = u0/( np.sqrt(g0*(ct.gas_constant/gas_0.mean_molecular_weight)*T0)  )
 
-        self.states = ct.SolutionArray(self.gas, 1, extra={ 'x':[0], 'tempo':[0], 'dt':[0], 'Mach':[M0], 'Vel':[u0], 'Enthalpy':[h0], 'Gamma':[g0]   })
+        self.states = ct.SolutionArray(self.gas, 1, extra={ 'x':[0], 'tempo':[0], 'dt':[0], 'Mach':[M0], 'Vel':[u0], 'Enthalpy':[h0], 'Gamma':[g0], 'M_dot':[self.mdot]   })
         self.Y0 = np.hstack((self.gas.T, self.gas.density,  self.gas.Y))
     
     
@@ -115,8 +114,9 @@ class PFR_Solver:
         solver.set_integrator(name='vode', method='bdf', with_jacobian=True)
         solver.set_initial_value(self.Y0,0)
 
-        dx, x_end = 1e-3, self.x[-1] #Passo e comprimento total da tubeira
+        dx, x_end = 0.5e-3, self.x[-1] #Passo e comprimento total da tubeira
 
+       
         tempo = 0
         for x in np.arange(dx,x_end+dx,dx): 
 
@@ -126,17 +126,22 @@ class PFR_Solver:
                 print('Erro em x = ', x)
                     
             gas.TDY = solver.y[0], solver.y[1], solver.y[2::]
+            #gas.SP = self.s0, gas.P ### Aqui-------------------------------------------------
+            #gas.equilibrate('SP')   ### -----------------------------------------------------
             
             #outros parametros
             hx      = gas.enthalpy_mass    
+            #ux      = (2*(self.h5-hx))**0.5 
             ux      = self.mdot/(self.A(x)*gas.density) 
             MW_mix  = gas.mean_molecular_weight
             gamma   = gas.cp/self.gas.cv
             a_sound = np.sqrt( gamma*(ct.gas_constant/MW_mix)*gas.T )     
             Mach    = ux/a_sound
             tempo   = tempo + dx/ux
+            mdot_c    = ux*gas.density*self.A(x)
+            raio_c    = ((self.mdot/(ux*gas.density))/np.pi)**0.5
             
 
-            self.states.append(gas.state,  x=solver.t, tempo=tempo, dt=dx/ux, Mach=Mach, Vel=ux, Enthalpy=hx, Gamma=gamma)
+            self.states.append(gas.state,  x=solver.t, tempo=tempo, dt=dx/ux, Mach=Mach, Vel=ux, Enthalpy=hx, Gamma=gamma, M_dot=raio_c )
             
                 

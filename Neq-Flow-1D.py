@@ -28,7 +28,7 @@ with st.sidebar:
     try:
         gas8 = STube.STube_Calc(T1, p1, us, p8, X1)
         bool_ST= True
-        T5 = gas8.T; p5 = gas8.P; h5 = gas8.h; X = gas8.X ; g5 = gas8.cp/gas8.cv
+        T5 = gas8.T; p5 = gas8.P; h5 = gas8.h; X5 = gas8.X ; g5 = gas8.cp/gas8.cv
         st.write(":green[**!STube Rodou Corretamente!**]")
         
         
@@ -44,7 +44,7 @@ with st.sidebar:
 
     if bool_ST == True:
         try: 
-            Reator = Reactor.PFR_Solver(r_0=r_0, r_f=r_f, ang=ang, gas=gas8, T5=T5, p5=p5, X=X )
+            Reator = Reactor.PFR_Solver(r_0=r_0, r_f=r_f, ang=ang, gas=gas8, T5=T5, p5=p5, X=X5 )
             st.write(":green[**!NEq-Flow Rodou Corretamente!**]")
         except:
             st.write(":red[**!Erro em NEq-Flow!**]")
@@ -81,10 +81,10 @@ with tab1:
 
 
     with col2:
-        k = np.argsort(gas8.X)[::-1]
+        k = np.argsort(X5)[::-1]
         Xi = np.array(gas8.species_names)
 
-        fig = px.bar( title='Concentrações de Espécies - Estagnação', x=Xi[k], y=100*gas8.X[k],height=350,width=600,labels=dict(x='Espécies', y='Fração Molar (%)'))
+        fig = px.bar( title='Concentrações de Espécies - Estagnação', x=Xi[k], y=100*X5[k],height=350,width=600,labels=dict(x='Espécies', y='Fração Molar (%)'))
         fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=20)) )
         fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=20)) )
         fig.update_xaxes(title_font_family="Arial")
@@ -147,9 +147,9 @@ with tab1:
 
     st.write("##### Tabela de Parâmetros Termodinâmicos Calculados")
     df = pd.DataFrame( data=np.column_stack(( Reator.states.Vel, Reator.states.Mach, Reator.states.T, Reator.states.P, Reator.states.density, 
-                                            1e6*Reator.states.viscosity, Reator.states.cp_mass, Reator.states.cv_mass )),
+                                            Reator.states.entropy_mass/1e3,1e6*Reator.states.viscosity, Reator.states.cp_mass, Reator.states.cv_mass )),
                     columns=['Velocidade, m/s','Mach', 'Temperatura, K','Pressão (Pa)','Densidade, kg/m3',
-                            'Viscosidade, 1E-6Pa-s', 'Cp, J/(K.Kg)','Cv, J/(K.Kg)' ]  )
+                            'Entropia, kJ/(K.Kg)','Viscosidade, 1E-6Pa-s', 'Cp, J/(K.Kg)','Cv, J/(K.Kg)' ]  )
 
     df.set_index( Reator.states.x ,inplace=True)
     df.index.set_names("Posição, m",inplace=True)
