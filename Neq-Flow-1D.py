@@ -19,10 +19,10 @@ with st.sidebar:
     st.write("## Tubo de Choque")
     X1  = st.text_input(label='Composição Inicial do Driven', value='O2: 0.21, N2: 0.79')
     st.write("*obs: a composição inicial deverá conter somente O, O2, N, NO, NO2, N2O e N2*")
-    p1 =  st.number_input(label="Pressão inicial do Driven (kPa):"       , value=11.0   , min_value=1.0, step=0.1)*1e3
+    p1 =  st.number_input(label="Pressão inicial do Driven (kPa):"       , value=10.7   , min_value=1.0, step=0.1)*1e3
     T1 =  st.number_input(label="Temperatura inicial do Driven (K):"     , value=298.   , min_value=298., step=1.)
-    us =  st.number_input(label="Vel. da Onda de Choque Incidente (m/s):", value=2100.0 , min_value=350., step=0.1)
-    p8 =  st.number_input(label="Pressão de Estagnação Medida (MPa):"    , value=8.8    , min_value=0.0, step=0.1)*1e6
+    us =  st.number_input(label="Vel. da Onda de Choque Incidente (m/s):", value=2083.0 , min_value=350., step=0.1)
+    p8 =  st.number_input(label="Pressão de Estagnação Medida (MPa):"    , value=9.9    , min_value=0.0, step=0.1)*1e6
     st.write("*obs: insira 0 no campo acima na ausência de uma pressão p5 e uma estimativa será usada.*")
     bool_ST= False
     try:
@@ -30,6 +30,7 @@ with st.sidebar:
         bool_ST= True
         T5 = gas8.T; p5 = gas8.P; h5 = gas8.h; X = gas8.X ; g5 = gas8.cp/gas8.cv
         st.write(":green[**!STube Rodou Corretamente!**]")
+        
         
     except:
         st.write(":red[**!Erro em STube Calc!**]")
