@@ -28,7 +28,7 @@ with st.sidebar:
     try:
         gas8 = STube.STube_Calc(T1, p1, us, p8, X1)
         bool_ST= True
-        T5 = gas8.T; p5 = gas8.P; h5 = gas8.h; X = gas8.X 
+        T5 = gas8.T; p5 = gas8.P; h5 = gas8.h; X = gas8.X ; g5 = gas8.cp/gas8.cv
         st.write(":green[**!STube Rodou Corretamente!**]")
         
     except:
@@ -67,14 +67,15 @@ with tab1:
         st.info(f"""Pressão, p1 :         {p1/1e3 : 4.4} kPa   \\
                 Temperatura, T1 :         {T1 : .0f} K         \\
                 Vel. Onda Incidente, us : {us : 5.5} m/s       \\
-                Composição Inicial : {X1} 
+                Composição Inicial :      {X1} 
                 """)
         
         st.write("###### Condições de Estagnação:")
 
         st.info(f"""Pressão, p5 :     {p5/1e6 : 4.4} MPa       \\
             Temperatura, T5 :         {T5 : .0f} K             \\
-            Entalpia Específica, h5 : {h5/1e6 : 4.2f} MJ/kg 
+            Entalpia Específica, h5 : {h5/1e6 : 4.2f} MJ/kg    \\
+            Coeficiente de Expansão Adiabática, g5 : {g5 : 4.2f}
             """)
 
 
