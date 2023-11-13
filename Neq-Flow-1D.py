@@ -42,13 +42,16 @@ with st.sidebar:
 
 
     st.write("## Tubeira")
+
+    opcao = st.selectbox( 'Qual o tipo de solução?', ('Isentrópico Congelado', 'Reativo - Não Equilíbrio'))
+
     ang =  st.number_input(label="Semi-ângulo da tubeira cônica (graus):"  , value=15.0,   min_value=1.0, step=0.10 )
     r_0 =  st.number_input(label="Raio à Garganta (mm):"           , value=6.40,   min_value=0.0, step=0.10 )*1e-3
     r_f =  st.number_input(label="Raio à Saída (mm):"              , value=150.,   min_value=0.0, step=0.10 )*1e-3
 
     if bool_ST == True:
         try: 
-            Reator = Reactor.PFR_Solver(r_0=r_0, r_f=r_f, ang=ang, gas=gas8, T5=T5, p5=p5, X=X5 )
+            Reator = Reactor.PFR_Solver(r_0=r_0, r_f=r_f, ang=ang, gas=gas8, T5=T5, p5=p5, X=X5, Opt=opcao )
             st.write(":green[**!NEq-Flow Rodou Corretamente!**]")
             
         except:
@@ -137,7 +140,7 @@ with tab1:
 
     with col2:
         fig = px.area(title='Temperatura',x=100*Reator.states.x, y= Reator.states.T.astype('int'),labels=dict(x='Posição Axial (cm)', y='Temperatura (K)'))
-        fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17)) )
+        fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17), type="log")) )
         fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17)) )
         fig.update_xaxes(title_font_family="Arial")
         fig.update_traces(line={'width': 5},line_color='#910902',hoverlabel=dict(font_size=18))
