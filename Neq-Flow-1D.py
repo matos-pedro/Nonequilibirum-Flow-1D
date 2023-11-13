@@ -140,7 +140,7 @@ with tab1:
 
     with col2:
         fig = px.area(title='Temperatura',x=100*Reator.states.x, y= Reator.states.T.astype('int'),labels=dict(x='Posição Axial (cm)', y='Temperatura (K)'))
-        fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17), type="log")) )
+        fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17), type="log") )
         fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17)) )
         fig.update_xaxes(title_font_family="Arial")
         fig.update_traces(line={'width': 5},line_color='#910902',hoverlabel=dict(font_size=18))
