@@ -75,7 +75,7 @@ with tab1:
         st.info(f"""Pressão, p5 :     {p5/1e6 : 4.4} MPa       \\
             Temperatura, T5 :         {T5 : .0f} K             \\
             Entalpia Específica, h5 : {h5/1e6 : 4.2f} MJ/kg    \\
-            Coeficiente de Expansão Adiabática, g5 : {g5 : 4.2f}
+            Coeficiente de Expansão Adiabática, g5 : {g5 : 4.4f}
             """)
 
 
