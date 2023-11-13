@@ -212,6 +212,8 @@ with tab2:
     st.latex(r'''\frac{dT}{dx} = \frac{v_x^2}{\rho c_p}\frac{d\rho}{dx} +  \frac{v_x^2}{c_p}\left( \frac{1}{A}\frac{dA}{dx}\right) - \frac{1}{v_x \rho c_p } \sum_i h_i MW_i  \dot{\omega_i}''')
     st.latex(r'''\frac{dY_i}{dx} = \frac{\omega_i MW_i}{\rho v_x}''')
 
+    st.write('''Para o caso *Isentrópico Congelado*, todo o equacionamento é mantido e a taxa $w_i$ de reação química é considerada anulada.''')
+
     st.write(''' De acordo com (4), um reator do tipo *plug-flow* representa um reator ideal que possui as seguintes características:\\
              1 - fluxo estacionário;\\
              2 - sem mistura na direção axial: a difusão de massa molecular e/ou turbulenta é insignificante na direção do fluxo;\\
