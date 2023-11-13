@@ -71,6 +71,7 @@ class PFR_Solver:
         
         s5 = self.gas.entropy_mass
         g5 = self.gas.cp/self.gas.cv
+        h5 = self.gas.h
         pg = self.p5*((1+0.5*(g5-1))**(-g5/(g5-1)))
 
         # Encontrando Pressão na Garganta -------------------------------------------------------------------
