@@ -37,7 +37,7 @@ with st.sidebar:
 
 
     st.write("## Tubeira")
-    ang =  st.number_input(label="Semi-ângulo de divergência (graus):"  , value=15.0,   min_value=1.0, step=0.10 )
+    ang =  st.number_input(label="Semi-ângulo da tubeira cônica (graus):"  , value=15.0,   min_value=1.0, step=0.10 )
     r_0 =  st.number_input(label="Raio à Garganta (mm):"           , value=6.40,   min_value=0.0, step=0.10 )*1e-3
     r_f =  st.number_input(label="Raio à Saída (mm):"              , value=150.,   min_value=0.0, step=0.10 )*1e-3
 
