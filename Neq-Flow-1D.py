@@ -3,6 +3,8 @@ import cantera as ct
 import numpy as np
 import plotly.express as px   
 import pandas as pd
+import time
+time.sleep(1)
 
 import STube
 import Reactor
@@ -12,6 +14,8 @@ st.set_page_config(
     page_title="1D non-equlibrium nozzle flow - Calc",
     layout="wide",
     )
+
+
 
 with st.sidebar:
     st.write("# Dados de Entrada")
@@ -46,6 +50,7 @@ with st.sidebar:
         try: 
             Reator = Reactor.PFR_Solver(r_0=r_0, r_f=r_f, ang=ang, gas=gas8, T5=T5, p5=p5, X=X5 )
             st.write(":green[**!NEq-Flow Rodou Corretamente!**]")
+            
         except:
             st.write(":red[**!Erro em NEq-Flow!**]")
 
@@ -218,3 +223,4 @@ with tab2:
                 3 - General Plug Flow Reactor,Ashwin Kumar and Dr.Joseph Meadows, https://cantera.org/examples/matlab/Plug_Flow_Reactor.m.html . \\
                 4 - Turns, S. R., An introduction to combustion: concepts and applications, third edition. ed., McGraw-Hill series in mechanical engineering, McGraw-Hill, New York, 2012.''')
 
+#time.sleep(5)
