@@ -52,7 +52,7 @@ st.write("## Simulação 1D em Não-Equilíbrio ")
 st.write("""A calculadora calcula
          1) as condições de estagnação de um tubo de choque, 
          2) as condições da garganta em equilíbrio dada a tubeira e 
-         3) simula, da garganta em diante, em 1d o escoamento reativo estabelecido na tubeira.""")
+         3) simula, da garganta em diante, em 1d o escoamento reativo estabelecido em uma tubeira cônica.""")
 
 ## A Saída ----------------------------------------------------------------------------------------------
 
