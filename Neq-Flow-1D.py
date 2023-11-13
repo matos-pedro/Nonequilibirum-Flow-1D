@@ -43,7 +43,8 @@ with st.sidebar:
 
     st.write("## Tubeira")
 
-    opcao = st.selectbox( 'Qual o tipo de solução?', ('Isentrópico Congelado', 'Reativo - Não Equilíbrio'))
+    #opcao = st.selectbox( 'Qual o tipo de solução?', ('Isentrópico Congelado', 'Reativo - Não Equilíbrio'))
+    opcao = 'Reativo - Não Equilíbrio'
 
     ang =  st.number_input(label="Semi-ângulo da tubeira cônica (graus):"  , value=15.0,   min_value=1.0, step=0.10 )
     r_0 =  st.number_input(label="Raio à Garganta (mm):"           , value=6.40,   min_value=0.0, step=0.10 )*1e-3
@@ -212,7 +213,8 @@ with tab2:
     st.latex(r'''\frac{dT}{dx} = \frac{v_x^2}{\rho c_p}\frac{d\rho}{dx} +  \frac{v_x^2}{c_p}\left( \frac{1}{A}\frac{dA}{dx}\right) - \frac{1}{v_x \rho c_p } \sum_i h_i MW_i  \dot{\omega_i}''')
     st.latex(r'''\frac{dY_i}{dx} = \frac{\omega_i MW_i}{\rho v_x}''')
 
-    st.write('''Para o caso *Isentrópico Congelado*, todo o equacionamento é mantido e a taxa $w_i$ de reação química é considerada anulada.''')
+    #st.write('''Para o caso *Isentrópico Congelado*, todo o equacionamento é mantido e a taxa $w_i$ de reação química é anulada para
+    #         manutenção da concentração de espécies.''')
 
     st.write(''' De acordo com (4), um reator do tipo *plug-flow* representa um reator ideal que possui as seguintes características:\\
              1 - fluxo estacionário;\\
