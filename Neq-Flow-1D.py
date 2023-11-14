@@ -24,7 +24,7 @@ with st.sidebar:
     X1  = st.text_input(label='Composição Inicial do Driven', value='O2: 0.21, N2: 0.79')
     st.write("*obs: a composição inicial deverá conter somente O, O2, N, NO, NO2, N2O e N2*")
     p1 =  st.number_input(label="Pressão inicial do Driven (kPa):"       , value=10.7   , min_value=1.0, step=0.1)*1e3
-    T1 =  st.number_input(label="Temperatura inicial do Driven (K):"     , value=298.   , min_value=298., step=1.)
+    T1 =  st.number_input(label="Temperatura inicial do Driven (K):"     , value=298.   , min_value=10., step=1.)
     us =  st.number_input(label="Vel. da Onda de Choque Incidente (m/s):", value=2083.0 , min_value=350., step=0.1)
     p8 =  st.number_input(label="Pressão de Estagnação Medida (MPa):"    , value=9.9    , min_value=0.0, step=0.1)*1e6
     st.write("*obs: insira 0 no campo acima na ausência de uma pressão p5 e uma estimativa será usada.*")
