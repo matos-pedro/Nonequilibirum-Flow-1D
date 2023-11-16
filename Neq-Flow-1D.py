@@ -18,7 +18,7 @@ with st.sidebar:
 
 
     display = ("Redlich-Kwong", "Ar - NasaPoli7")
-    mech = ('./Data/Redlich-Kwong_Air.yaml',"air.yaml")
+    mech = ('./Data/Redlich-Kwong_Air.yaml',"air.yaml",'./Data/airNASA9.yaml')
     options = list(range(len(display)))
     value = st.selectbox("# Mecanismo de Reação", options, format_func=lambda x: display[x])
     #st.write(value,mech[value])
@@ -36,7 +36,7 @@ with st.sidebar:
 
     st.write("## Tubo de Choque")
     X1  = st.text_input(label='Composição Inicial do Driven', value='O2: 0.21, N2: 0.79')
-    st.write("*obs: a composição inicial deverá conter somente O, O2, N, NO, NO2, N2O e N2*")
+    st.write("*obs: a composição inicial deverá conter somente O2, N2 e NO*")
     p1 =  st.number_input(label="Pressão inicial do Driven (kPa):"       , value=10.7   , min_value=1.0, step=0.1)*1e3
     T1 =  st.number_input(label="Temperatura inicial do Driven (K):"     , value=298.   , min_value=298., step=1.)
     us =  st.number_input(label="Vel. da Onda de Choque Incidente (m/s):", value=2083.0 , min_value=350., step=0.1)
@@ -165,10 +165,19 @@ with tab1:
         st.plotly_chart(fig,use_container_width=True)
 
     st.write("##### Tabela de Parâmetros Termodinâmicos Calculados")
-    df = pd.DataFrame( data=np.column_stack(( Reator.states.Vel, Reator.states.Mach, Reator.states.T, Reator.states.P, Reator.states.density, 
-                                            1e6*Reator.states.viscosity, Reator.states.cp_mass, Reator.states.cv_mass,Reator.states.r )),
-                    columns=['Velocidade, m/s','Mach', 'Temperatura, K','Pressão (Pa)','Densidade, kg/m3',
-                            'Viscosidade, 1E-6Pa-s', 'Cp, J/(K.Kg)','Cv, J/(K.Kg)','Raio, J/(K.Kg)' ]  )
+
+    try:
+        df = pd.DataFrame( data=np.column_stack(( Reator.states.Vel, Reator.states.Mach, Reator.states.T, Reator.states.P, Reator.states.density, 
+                                                1e6*Reator.states.viscosity, Reator.states.cp_mass, Reator.states.cv_mass,Reator.states.r )),
+                           columns=['Velocidade, m/s','Mach', 'Temperatura, K','Pressão (Pa)','Densidade, kg/m3',
+                                    'Viscosidade, 1E-6Pa-s', 'Cp, J/(K.Kg)','Cv, J/(K.Kg)','Raio, J/(K.Kg)' ]  )
+        
+    except:
+        df = pd.DataFrame( data=np.column_stack(( Reator.states.Vel, Reator.states.Mach, Reator.states.T, Reator.states.P, Reator.states.density, 
+                                                  Reator.states.cp_mass, Reator.states.cv_mass,Reator.states.r )),
+                           columns=['Velocidade, m/s','Mach', 'Temperatura, K','Pressão (Pa)','Densidade, kg/m3',
+                                    'Cp, J/(K.Kg)','Cv, J/(K.Kg)','Raio, J/(K.Kg)' ]  )
+        
 
     df.set_index( Reator.states.x ,inplace=True)
     df.index.set_names("Posição, m",inplace=True)
