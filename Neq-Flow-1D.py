@@ -123,7 +123,7 @@ with tab1:
         st.plotly_chart(fig,use_container_width=True)
 
     with col2:
-        fig = px.area(x=100*Reator.x, y= Reator.A(Reator.x),labels=dict(x='Posição Axial (cm)', y='Area (cm^2)'))
+        fig = px.area(x=100*Reator.x, y= 1e4*Reator.A(Reator.x),labels=dict(x='Posição Axial (cm)', y='Area (cm^2)'))
         fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=20)) )
         fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=20)) )
         fig.update_xaxes(title_font_family="Arial")
