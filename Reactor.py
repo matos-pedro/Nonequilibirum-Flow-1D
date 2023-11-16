@@ -124,7 +124,8 @@ class PFR_Solver:
         dx, x_end = 1e-3, self.x[-1] #Passo e comprimento total da tubeira
 
         tempo = 0
-        for x in np.arange(dx,x_end+10*dx,dx): 
+        x = 1e-4
+        for j in np.arange(dx,x_end+10*dx,dx): 
 
             try:
                 solver.integrate(x)  
@@ -132,9 +133,21 @@ class PFR_Solver:
                 print('Erro em x = ', x)
                     
             gas.TDY = solver.y[0], solver.y[1], solver.y[2::]
-            if(self.Sol==2):
+            
+            if(self.Sol==0):
+                hx = gas.enthalpy_mass
+                ux = self.mdot/(self.A(x)*gas.density) 
+
+            elif(self.Sol==1):
+                hx = gas.enthalpy_mass    
+                ux = (2.0*(self.h5-hx))**0.5
+
+            else:
                 gas.SP = self.s5, gas.P
                 gas.equilibrate('SP')
+                hx = gas.enthalpy_mass    
+                ux = (2.0*(self.h5-hx))**0.5
+
             
             #outros parametros
             hx      = gas.enthalpy_mass    
@@ -154,4 +167,6 @@ class PFR_Solver:
 
             self.states.append(gas.state,  x_solver=solver.t, tempo=tempo, dt=dx/ux, Mach=Mach, Vel=ux, Enthalpy=hx, Gamma=gamma, x=x_c,r=r_c)
             
-                
+            if  (self.Sol==0): x = x + dx
+            elif(self.Sol==1): x = x_c + dx
+            else:              x = x_c + dx    
