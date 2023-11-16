@@ -3,8 +3,6 @@ import cantera as ct
 import numpy as np
 import plotly.express as px   
 import pandas as pd
-import time
-time.sleep(1)
 
 import STube
 import Reactor
@@ -15,24 +13,40 @@ st.set_page_config(
     layout="wide",
     )
 
-
-
 with st.sidebar:
     st.write("# Dados de Entrada")
+
+
+    display = ("Redlich-Kwong", "Ar - NasaPoli7")
+    mech = ('./Data/Redlich-Kwong_Air.yaml',"air.yaml")
+    options = list(range(len(display)))
+    value = st.selectbox("# Mecanismo de Reação", options, format_func=lambda x: display[x])
+    #st.write(value,mech[value])
+    Mech = mech[value]
+
+
+    display = ("Não Equilíbrio", "Congelado Isentrópico", "Equilíbrio Isentrópico")
+    options = list(range(len(display)))
+    value = st.selectbox("Tipo de Solução", options, format_func=lambda x: display[x])
+    #st.write(value)
+    Sol = value
+
+    #option = st.selectbox('Mecanismo de Reação',  ('Email', 'Home phone', 'Mobile phone'),args=(1,2,3))
+    #st.write('You selected:', option)
 
     st.write("## Tubo de Choque")
     X1  = st.text_input(label='Composição Inicial do Driven', value='O2: 0.21, N2: 0.79')
     st.write("*obs: a composição inicial deverá conter somente O, O2, N, NO, NO2, N2O e N2*")
     p1 =  st.number_input(label="Pressão inicial do Driven (kPa):"       , value=10.7   , min_value=1.0, step=0.1)*1e3
-    T1 =  st.number_input(label="Temperatura inicial do Driven (K):"     , value=298.   , min_value=10., step=1.)
+    T1 =  st.number_input(label="Temperatura inicial do Driven (K):"     , value=298.   , min_value=298., step=1.)
     us =  st.number_input(label="Vel. da Onda de Choque Incidente (m/s):", value=2083.0 , min_value=350., step=0.1)
     p8 =  st.number_input(label="Pressão de Estagnação Medida (MPa):"    , value=9.9    , min_value=0.0, step=0.1)*1e6
     st.write("*obs: insira 0 no campo acima na ausência de uma pressão p5 e uma estimativa será usada.*")
     bool_ST= False
     try:
-        gas8 = STube.STube_Calc(T1, p1, us, p8, X1)
+        gas8 = STube.STube_Calc(T1, p1, us, p8, X1, Mech)
         bool_ST= True
-        T5 = gas8.T; p5 = gas8.P; h5 = gas8.h; X5 = gas8.X ; g5 = gas8.cp/gas8.cv
+        T5 = gas8.T; p5 = gas8.P; h5 = gas8.h; X8 = gas8.X ; g5 = gas8.cp/gas8.cv; R8 = ct.gas_constant/gas8.mean_molecular_weight
         st.write(":green[**!STube Rodou Corretamente!**]")
         
         
@@ -42,17 +56,14 @@ with st.sidebar:
 
 
     st.write("## Tubeira")
-
-
     ang =  st.number_input(label="Semi-ângulo da tubeira cônica (graus):"  , value=15.0,   min_value=1.0, step=0.10 )
     r_0 =  st.number_input(label="Raio à Garganta (mm):"           , value=6.40,   min_value=0.0, step=0.10 )*1e-3
     r_f =  st.number_input(label="Raio à Saída (mm):"              , value=150.,   min_value=0.0, step=0.10 )*1e-3
 
     if bool_ST == True:
         try: 
-            Reator = Reactor.PFR_Solver(r_0=r_0, r_f=r_f, ang=ang, gas=gas8, T5=T5, p5=p5, X=X5 )
+            Reator = Reactor.PFR_Solver(r_0=r_0, r_f=r_f, ang=ang, gas=gas8, T5=T5, p5=p5, X=X8, Mech=Mech, Sol=Sol )
             st.write(":green[**!NEq-Flow Rodou Corretamente!**]")
-            
         except:
             st.write(":red[**!Erro em NEq-Flow!**]")
 
@@ -83,15 +94,16 @@ with tab1:
         st.info(f"""Pressão, p5 :     {p5/1e6 : 4.4} MPa       \\
             Temperatura, T5 :         {T5 : .0f} K             \\
             Entalpia Específica, h5 : {h5/1e6 : 4.2f} MJ/kg    \\
-            Coeficiente de Expansão Adiabática, g5 : {g5 : 4.4f}
+            Coeficiente de Expansão Adiabática, g5 : {g5 : 4.4f}\\
+            Constante R8: {R8: 4.4f}
             """)
 
 
     with col2:
-        k = np.argsort(X5)[::-1]
+        k = np.argsort(X8)[::-1]
         Xi = np.array(gas8.species_names)
 
-        fig = px.bar( title='Concentrações de Espécies - Estagnação', x=Xi[k], y=100*X5[k],height=350,width=600,labels=dict(x='Espécies', y='Fração Molar (%)'))
+        fig = px.bar( title='Concentrações de Espécies - Estagnação', x=Xi[k], y=100*X8[k],height=350,width=600,labels=dict(x='Espécies', y='Fração Molar (%)'))
         fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=20)) )
         fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=20)) )
         fig.update_xaxes(title_font_family="Arial")
@@ -139,7 +151,7 @@ with tab1:
 
     with col2:
         fig = px.area(title='Temperatura',x=100*Reator.states.x, y= Reator.states.T.astype('int'),labels=dict(x='Posição Axial (cm)', y='Temperatura (K)'))
-        fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17), type="log") )
+        fig.update_layout( yaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17)) )
         fig.update_layout( xaxis = dict(tickfont = dict(size=15),titlefont = dict(size=17)) )
         fig.update_xaxes(title_font_family="Arial")
         fig.update_traces(line={'width': 5},line_color='#910902',hoverlabel=dict(font_size=18))
@@ -154,9 +166,9 @@ with tab1:
 
     st.write("##### Tabela de Parâmetros Termodinâmicos Calculados")
     df = pd.DataFrame( data=np.column_stack(( Reator.states.Vel, Reator.states.Mach, Reator.states.T, Reator.states.P, Reator.states.density, 
-                                            Reator.states.entropy_mass/1e3,1e6*Reator.states.viscosity, Reator.states.cp_mass, Reator.states.cv_mass )),
+                                            1e6*Reator.states.viscosity, Reator.states.cp_mass, Reator.states.cv_mass,Reator.states.r )),
                     columns=['Velocidade, m/s','Mach', 'Temperatura, K','Pressão (Pa)','Densidade, kg/m3',
-                            'Entropia, kJ/(K.Kg)','Viscosidade, 1E-6Pa-s', 'Cp, J/(K.Kg)','Cv, J/(K.Kg)' ]  )
+                            'Viscosidade, 1E-6Pa-s', 'Cp, J/(K.Kg)','Cv, J/(K.Kg)','Raio, J/(K.Kg)' ]  )
 
     df.set_index( Reator.states.x ,inplace=True)
     df.index.set_names("Posição, m",inplace=True)
@@ -211,9 +223,6 @@ with tab2:
     st.latex(r'''\frac{dT}{dx} = \frac{v_x^2}{\rho c_p}\frac{d\rho}{dx} +  \frac{v_x^2}{c_p}\left( \frac{1}{A}\frac{dA}{dx}\right) - \frac{1}{v_x \rho c_p } \sum_i h_i MW_i  \dot{\omega_i}''')
     st.latex(r'''\frac{dY_i}{dx} = \frac{\omega_i MW_i}{\rho v_x}''')
 
-    #st.write('''Para o caso *Isentrópico Congelado*, todo o equacionamento é mantido e a taxa $w_i$ de reação química é anulada para
-    #         manutenção da concentração de espécies.''')
-
     st.write(''' De acordo com (4), um reator do tipo *plug-flow* representa um reator ideal que possui as seguintes características:\\
              1 - fluxo estacionário;\\
              2 - sem mistura na direção axial: a difusão de massa molecular e/ou turbulenta é insignificante na direção do fluxo;\\
@@ -228,4 +237,3 @@ with tab2:
                 3 - General Plug Flow Reactor,Ashwin Kumar and Dr.Joseph Meadows, https://cantera.org/examples/matlab/Plug_Flow_Reactor.m.html . \\
                 4 - Turns, S. R., An introduction to combustion: concepts and applications, third edition. ed., McGraw-Hill series in mechanical engineering, McGraw-Hill, New York, 2012.''')
 
-#time.sleep(5)

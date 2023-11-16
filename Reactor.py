@@ -7,11 +7,15 @@ from scipy.interpolate import UnivariateSpline as us1d
 
 
 class PFR_Ode:
-    def __init__(self, gas, mdot, A_x, dAdx_x):
+    def __init__(self, gas, mdot, A_x, dAdx_x,Sol):
         self.gas  = gas
         self.mdot = mdot
         self.A_x = A_x
         self.dAdx_x = dAdx_x
+        if (Sol == 1.0):
+            self.Wi = 0.0
+        else:
+            self.Wi = 1.0
 
     def __call__(self, x, Y):  
 
@@ -32,7 +36,7 @@ class PFR_Ode:
 
         MW = self.gas.molecular_weights
         h  = self.gas.standard_enthalpies_RT*(ct.gas_constant/MW_mix)*T
-        w  = self.gas.net_production_rates ### Aqui-------------------------------------------------
+        w  = self.gas.net_production_rates*self.Wi 
         cp = self.gas.cp_mass
             
         drhodx = (((rho*ux)**2.)*(1.-Rnd)*(dAdx(x)/A(x))+(rho/ux)*Rnd*np.sum(MW*w*(h-(MW_mix/MW)*cp*T)))/(P*(1.+ux**2./(cp*T)) - rho*ux**2.)
@@ -47,6 +51,7 @@ class PFR_Solver:
         self.Tubeira(**kargs)
         self.Garganta(**kargs)
         self.Solver()
+        self.R_F = kargs['r_f']
 
     
     def Tubeira(self, **kargs):
@@ -56,28 +61,29 @@ class PFR_Solver:
         self.x = np.linspace(x_0, x_f, 50)
         self.r = np.linspace(kargs['r_0'], kargs['r_f'], 50)
 
-        self.A = us1d( self.x, np.pi*self.r**2.0, k=3 )
-        self.R = us1d( self.x, self.r, k=3 )
+        self.A = us1d( self.x, np.pi*self.r**2.0, k=4 )
+        self.R = us1d( self.x, self.r, k=4 )
         self.dAdx = self.A.derivative()    
+        self.x_R = us1d( self.r, self.x, k=4 )
 
     def Garganta(self,**kargs):
         self.gas = kargs['gas']
         self.T5  = kargs['T5']
         self.p5  = kargs['p5']
         self.X   = kargs['X']
+        self.Sol = kargs['Sol']
 
         self.gas.TPX = self.T5, self.p5, self.X
         self.gas.equilibrate('TP')
         
-        s5 = self.gas.entropy_mass
-        self.s0 = s5
+        self.s5 = self.gas.entropy_mass
+        self.h5 = self.gas.enthalpy_mass
         g5 = self.gas.cp/self.gas.cv
-        self.h5 = self.gas.h
         pg = self.p5*((1+0.5*(g5-1))**(-g5/(g5-1)))
 
-        # Encontrando Pressão na Garganta -------------------------------------------------------------------
+# Encontrando Pressão na Garganta -------------------------------------------------------------------
         def acha_pg(p):
-            self.gas.SP = s5, p
+            self.gas.SP = self.s5, p
             self.gas.equilibrate('SP')
             hg = self.gas.h
             vg = (2.0*(self.h5-hg))**0.5
@@ -87,11 +93,12 @@ class PFR_Solver:
         rranges = (slice(pg*0.8, pg*1.2, pg/100.0 ),)
         resbrute = optimize.brute(acha_pg, rranges, full_output=True, finish=optimize.fmin)
         pg = resbrute[0]
-        #----------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------
 
-        self.gas.SP = s5, pg
+
+        self.gas.SP = self.s5, pg
         self.gas.equilibrate('SP')
-        gas_0 = self.gas
+        gas_0 = self.gas #0 agora significa o começo do dominio de integracao, a garganta
 
         r0 = gas_0.density
         g0 = gas_0.cp/gas_0.cv
@@ -102,23 +109,22 @@ class PFR_Solver:
         u0 = self.mdot/(r0*self.A(0))
         M0 = u0/( np.sqrt(g0*(ct.gas_constant/gas_0.mean_molecular_weight)*T0)  )
 
-        self.states = ct.SolutionArray(self.gas, 1, extra={ 'x':[0], 'tempo':[0], 'dt':[0], 'Mach':[M0], 'Vel':[u0], 'Enthalpy':[h0], 'Gamma':[g0]  })
+        self.states = ct.SolutionArray(self.gas, 1, extra={ 'x_solver':[0], 'tempo':[0], 'dt':[0], 'Mach':[M0], 'Vel':[u0], 'Enthalpy':[h0], 'Gamma':[g0], 'x':[0],'r':[self.R(0)]    })
         self.Y0 = np.hstack((self.gas.T, self.gas.density,  self.gas.Y))
     
     
     def Solver(self):
         gas    = self.gas
-        ode    = PFR_Ode(self.gas, self.mdot,self.A,self.dAdx)        #objeto
+        ode    = PFR_Ode(self.gas, self.mdot,self.A,self.dAdx,self.Sol)        #objeto
         solver = scipy.integrate.ode(ode)  #objeto
 
         solver.set_integrator(name='vode', method='bdf', with_jacobian=True)
         solver.set_initial_value(self.Y0,0)
 
-        dx, x_end = 0.5e-3, self.x[-1] #Passo e comprimento total da tubeira
+        dx, x_end = 1e-3, self.x[-1] #Passo e comprimento total da tubeira
 
-       
         tempo = 0
-        for x in np.arange(dx,x_end+dx,dx): 
+        for x in np.arange(dx,x_end+10*dx,dx): 
 
             try:
                 solver.integrate(x)  
@@ -126,22 +132,26 @@ class PFR_Solver:
                 print('Erro em x = ', x)
                     
             gas.TDY = solver.y[0], solver.y[1], solver.y[2::]
-            #gas.SP = self.s0, gas.P ### Aqui-------------------------------------------------
-            #gas.equilibrate('SP')   ### -----------------------------------------------------
+            if(self.Sol==2):
+                gas.SP = self.s5, gas.P
+                gas.equilibrate('SP')
             
             #outros parametros
             hx      = gas.enthalpy_mass    
-            #ux      = (2*(self.h5-hx))**0.5 
-            ux      = self.mdot/(self.A(x)*gas.density) 
+            ux      = (2.0*(self.h5-hx))**0.5
+            #ux      = self.mdot/(self.A(x)*gas.density) 
             MW_mix  = gas.mean_molecular_weight
             gamma   = gas.cp/self.gas.cv
             a_sound = np.sqrt( gamma*(ct.gas_constant/MW_mix)*gas.T )     
             Mach    = ux/a_sound
             tempo   = tempo + dx/ux
-            mdot_c    = ux*gas.density*self.A(x)
-            raio_c    = ((self.mdot/(ux*gas.density))/np.pi)**0.5
-            
 
-            self.states.append(gas.state,  x=solver.t, tempo=tempo, dt=dx/ux, Mach=Mach, Vel=ux, Enthalpy=hx, Gamma=gamma )
+            A_c = self.mdot/(ux*gas.density)
+            r_c = 1.0*(A_c/np.pi)**0.5
+            x_c = 1.0*self.x_R(r_c)
+
+            if (r_c > self.R(self.x[-1])): break
+
+            self.states.append(gas.state,  x_solver=solver.t, tempo=tempo, dt=dx/ux, Mach=Mach, Vel=ux, Enthalpy=hx, Gamma=gamma, x=x_c,r=r_c)
             
                 

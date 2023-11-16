@@ -3,8 +3,9 @@ import numpy as np
 import cantera as ct
 
 
-def Shock12(t1, p1, us, X):
-    gas1 = ct.Solution('./Data/Redlich-Kwong_Air.yaml')
+def Shock12(t1, p1, us, X, Mech):
+    gas1 = ct.Solution(Mech)
+    print('OK')
     gas1.TPX = t1,p1,X
     gas1.equilibrate('TP')
 
@@ -51,8 +52,8 @@ def Shock5E(gas5,p8,p5):
     return gas5
     
 
-def STube_Calc(T1, p1, us, p8, X):   
-    gas2,u2 = Shock12(T1,p1,us,X)
+def STube_Calc(T1, p1, us, p8, X, Mech):   
+    gas2,u2 = Shock12(T1,p1,us,X, Mech)
     gas5    = Shock25(gas2,u2)
     gas8    = Shock5E(gas5,p8,gas5.P)
     return gas8
