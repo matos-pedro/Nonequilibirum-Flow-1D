@@ -18,10 +18,10 @@ with st.sidebar:
 
 
     display = ("Redlich-Kwong", "Ar - NasaPoli7")
-    mech = ('./Data/Redlich-Kwong_Air.yaml')
+    mech = ('./Data/Redlich-Kwong_Air.yaml',"air.yaml")
     options = list(range(len(display)))
     value = st.selectbox("# Mecanismo de Reação", options, format_func=lambda x: display[x])
-    #st.write(value,mech[value])
+    st.write(value,mech[value])
     Mech = mech[value]
 
 
