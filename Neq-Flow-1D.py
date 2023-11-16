@@ -225,7 +225,7 @@ with tab2:
 
     st.write('''Para o particular caso de *equilíbrio isentrópico*, é forçado o equilíbrio termodinâmico a cada passo de iteração
              para especificação dos parâmetros termodinâmicos e manutenção da entropia. Já para o caso *congelado isentrópico*,
-             anula-se todas as taxas $w_i$ de formação/consumo de espécies.''')
+             anulam-se todas as taxas $w_i$ de formação de espécies.''')
 
     st.write(''' De acordo com (4), um reator do tipo *plug-flow* representa um reator ideal que possui as seguintes características:\\
              1 - fluxo estacionário;\\
