@@ -217,9 +217,8 @@ with tab1:
 
 with tab2:
     st.write('''##### O que é feito aqui?''')
-    st.write('''Especifica-se as condições ''')
     st.write('''Inicialmente especifica-se por completo o tubo de choque a partir de informações do gás de driven e
-             velocidade da onda de choque incidente (1,2). A pressçao de estagnação, se conhecida, pode ser usada também
+             velocidade da onda de choque incidente (1,2). A pressão de estagnação, se conhecida, pode ser usada também
              como dado de entrada; caso contrário, o campo associado pode ser preenchido com zero, e uma pressão p5 será estimada.''')
     
     st.write('''A partir da estagnação e dos dados inseridos referentes à geometria da tubeira, o código assume equilíbrio
