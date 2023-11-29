@@ -7,6 +7,8 @@ import pandas as pd
 import STube
 import Reactor
 
+import time
+time.sleep(0.2)
 
 st.set_page_config(
     page_title="1D non-equlibrium nozzle flow - Calc",
